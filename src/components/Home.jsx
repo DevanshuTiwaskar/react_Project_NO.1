@@ -1,33 +1,37 @@
-// import React from 'react' 
-
-import { Link } from "react-router-dom"
-import Nav from "./Nav"
+import { Link } from "react-router-dom";
+import Nav from "./Nav";
+import { useContext } from "react";
+import { ProductContext } from "../utils/Context";
+import Loading from "./Loading";
 
 const Home = () => {
-  return (
+  const { Products } = useContext(ProductContext); // Correct Destructuring
 
+  console.log(Products);
+  
+  return Products ? (
     <>
-      
-      <Nav/>
+      <Nav />
+      <div className="w-[85%] h-full p-10 pt-[5%] flex flex-wrap overflow-x-hidden overflow-y-auto">
+        
+      {Products.map((p,i) => (
+      <Link key={i} to={`/details/${p.id}`} className="mr-3 mb-3 card p-3 border shadow rounded w-[18%] h-[30vh] flex-col flex justify-center items-center">
+        <div
+          className="hover:scale-110 mb-3 w-full h-[80%] bg-contain bg-no-repeat bg-center"
+          style={{
+            backgroundImage: `url(${p.image})`,
+          }}
+        ></div>
+        <h1 className="hover:text-blue-300">{p.title}</h1>
+      </Link>
+      ))}
 
-
-    <div className="w-[85%] h-full p-10 pt-[5%] flex flex-wrap overflow-x-hidden overflow-y-auto">
-    <Link to="/details/1" className="mr-3 mb-3 card p-3 border shodow rounded w-[18%] h-[30vh] flex-col flex justify-center items-center">
-      <div
-        className="hover:scale-110 mb-3 w-full h-[80%] bg-contain bg-no-repeat bg-center"
-        style={{
-          backgroundImage :
-            "url(https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg)",
-        }}
-      ></div>
-      <h1 className="hover:text-blue-300" >Lorem ipsum dolor sit.</h1>
-    </Link>
-  </div> 
-    
+        
+      </div>
     </>
+  ) : (
+    <Loading />
+  );
+};
 
-
-  )
-}
-
-export default Home
+export default Home;
