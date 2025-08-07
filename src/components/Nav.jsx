@@ -7,20 +7,20 @@ import { Link } from "react-router-dom";
 const Nav = () => {
   const { Products } = useContext(ProductContext);
 
-  // let distinct_category =
-  //   Products && Products.reduce((acc, cv) => [...acc, cv.category], []);
+  let distinct_category =
+    Products && Products.reduce((acc, cv) => [...acc, cv.category], []);
+    
+      distinct_category = [...new Set(distinct_category)];
+      console.log(distinct_category);
 
 
-    ///(products &&) if products is existed or not if not it show undefind 
-    ///(Products.reduce((acc,cv)=> [...acc, cv.category],[])
-    //
+    // (products &&) if products is existed or not if not it show undefind 
+    // (Products.reduce((acc,cv)=> [...acc, cv.category],[])
+    
 
-    let distinct_category = Products && [...new Set(Products.map((cv) => cv.category))];
+    // let distinct_category = Products && [...new Set(Products.map((cv) => cv.category))];
 
 
-
-  // distinct_category = [...new Set(distinct_category)];
-  // console.log(distinct_category);
 
   const color = () => {
     return `rgba(${(Math.random() * 255).toFixed()},${(Math.random() * 255).toFixed()},${(Math.random() * 255).toFixed()},0.4)`
@@ -40,6 +40,7 @@ const Nav = () => {
       <h1 className="text-2xl mb-3 w-[80%]">Categoty Filter</h1>
       <div className=" w-[80%]">
         {distinct_category.map((c, i) => (
+          
           <Link
             key={i}
             to={`/?catagory=${c}`}
