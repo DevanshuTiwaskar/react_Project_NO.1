@@ -1,56 +1,41 @@
-// import React from 'react'
-
 import { useContext, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-// import axios from "../utils/Axios";
 import Loading from "./Loading";
 import { ProductContext } from "../utils/Context";
+import { useParams, Link } from "react-router";
 
 const Details = () => {
-  const { Products, setproducts } = useContext(ProductContext);
-
-  const [product, setproduct] = useState(null);
-
+  const { products } = useContext(ProductContext);
   const { id } = useParams();
-
-  const getSingleProduct = async () => {
-    try {
-      const products = JSON.parse(localStorage.getItem("products")) || []; // Ensure it's an array
-      const productss = products.find((i) => String(i.id) === String(id)); // Compare correctly
-      setproduct(productss);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const [product, setProduct] = useState(null);
 
   useEffect(() => {
-    getSingleProduct();
-  }, []);
+    if (products?.length) setProduct(products.find((p) => String(p.id) === String(id)));
+  }, [id, products]);
 
-  return product ? (
-    <div className="w-[70%] flex justify-between items-center gap-5  h-full m-auto p-[10%] ">
+  if (!product) return <Loading />;
+
+  return (
+    <div className="flex flex-col lg:flex-row items-start gap-8 p-6 lg:p-10 bg-gray-50 min-h-screen">
       <img
-        className=" object-contain w-[40%] "
-        src={`${product.image}`}
-        alt=""
+        className="w-full lg:w-1/2 h-96 object-contain bg-white shadow-md rounded-lg p-4"
+        src={product.image}
+        alt={product.title}
       />
-      <div className="content w-[50%] flex flex-col gap-5">
-        <h1 className="text-5xl">{product.title}</h1>
-        <h3 className="text-zinc-400">{product.catagory}</h3>
-        <h2 className="text-red-500">${product.price}</h2>
-        <p>{product.description}</p>
-        <div className="flex gap-5">
-          <Link className="p-2 flex justify-center bg-blue-500 w-[20%] rounded">
+      <div className="flex-1 flex flex-col gap-4">
+        <h1 className="text-3xl lg:text-4xl font-bold">{product.title}</h1>
+        <span className="text-gray-500 capitalize">{product.category}</span>
+        <span className="text-red-500 font-bold text-2xl">${product.price}</span>
+        <p className="text-gray-700 mt-4">{product.description}</p>
+        <div className="flex flex-col sm:flex-row gap-4 mt-6">
+          <Link className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-center">
             Edit
           </Link>
-          <Link className="p-2 flex justify-center bg-red-500 w-[20%] rounded ">
+          <Link className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-center">
             Delete
           </Link>
         </div>
       </div>
     </div>
-  ) : (
-    <Loading />
   );
 };
 

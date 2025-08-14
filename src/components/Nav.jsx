@@ -1,57 +1,64 @@
-// import React from 'react'
-
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { ProductContext } from "../utils/Context";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 const Nav = () => {
-  const { Products } = useContext(ProductContext);
+  const { products } = useContext(ProductContext);
+  const categories = products ? [...new Set(products.map((p) => p.category))] : [];
+  const [isOpen, setIsOpen] = useState(false);
 
-  let distinct_category =
-    Products && Products.reduce((acc, cv) => [...acc, cv.category], []);
-    
-      distinct_category = [...new Set(distinct_category)];
-      console.log(distinct_category);
-
-
-    // (products &&) if products is existed or not if not it show undefind 
-    // (Products.reduce((acc,cv)=> [...acc, cv.category],[])
-    
-
-    // let distinct_category = Products && [...new Set(Products.map((cv) => cv.category))];
-
-
-
-  const color = () => {
-    return `rgba(${(Math.random() * 255).toFixed()},${(Math.random() * 255).toFixed()},${(Math.random() * 255).toFixed()},0.4)`
-  }
-
-// console.log(color())
+  const randomColor = () => {
+    const r = Math.floor(Math.random() * 200 + 50);
+    const g = Math.floor(Math.random() * 200 + 50);
+    const b = Math.floor(Math.random() * 200 + 50);
+    return `rgba(${r},${g},${b},0.2)`;
+  };
 
   return (
-    <nav className=" h-full w-[15%] bg-gray-100  flex flex-col items-center pt-5">
-      <a
-        className="py-3 px-5 border rounded border-zinc-400 hover:bg-zinc-400 transition delay-150 duration-300 ease-in-out  hover:text-white text-zinc-600"
-        href="/create"
-      >
-        Add New Product
-      </a>
-      <hr className="my-3 w-[80%]" />
-      <h1 className="text-2xl mb-3 w-[80%]">Categoty Filter</h1>
-      <div className=" w-[80%]">
-        {distinct_category.map((c, i) => (
-          
-          <Link
-            key={i}
-            to={`/?catagory=${c}`}
-            className="flex items-center  mb-3"
-          >
-            <span style={{backgroundColor: color()}} className="rounded-full  mr-2 w-[15px] h-[15px] bg-blue-300 "></span>{" "}
-            {c}
-          </Link>
-        ))}
+    <>
+      {/* Mobile toggle button */}
+      <div className="md:hidden flex justify-between items-center bg-white shadow-md p-4">
+       
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="text-gray-700 font-bold text-xl"
+        >
+          ☰
+        </button>
       </div>
-    </nav>
+
+      {/* Sidebar / Categories */}
+      <nav
+        className={`
+          bg-white shadow-md rounded-xl p-6 flex flex-col
+          md:h-[90vh] md:w-72 w-full
+          sticky top-5
+          ${isOpen ? "block" : "hidden"} md:block
+        `}
+      >
+        {/* Desktop Add Product */}
+        <div className="hidden md:block mb-6 text-center">
+       
+        </div>
+
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">Categories</h2>
+        <div className="flex flex-col gap-3 md:max-h-[70vh] overflow-y-auto">
+          {categories.map((c, i) => (
+            <Link
+              key={i}
+              to={`/?category=${c}`}
+              className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-colors text-sm sm:text-base"
+            >
+              <span
+                style={{ backgroundColor: randomColor() }}
+                className="w-4 h-4 rounded-full"
+              ></span>
+              <span className="capitalize text-gray-700 font-medium">{c}</span>
+            </Link>
+          ))}
+        </div>
+      </nav>
+    </>
   );
 };
 

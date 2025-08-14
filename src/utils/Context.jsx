@@ -1,34 +1,37 @@
-
-import axios from "./Axios";
-import { createContext, useEffect,  } from "react";
-
-import { useState } from "react";
+import { createContext, useState, useEffect } from "react";
+import instance from "./Axios";
 
 export const ProductContext = createContext();
 
-const Context = ({children}) => {
-  const [Products, setproducts] = useState(
-    JSON.parse(localStorage.getItem("products")) || null
+const Context = ({ children }) => {
+  const [products, setProducts] = useState(
+    JSON.parse(localStorage.getItem("products")) || []
   );
 
-//   const getProducts = async () => {
-//     try {
-//       const { data } = await axios("/products");
-//       setproducts(data)
-      
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
-//  console.log()
+  const getProduct = async () => {
+    try {
+      const { data } = await instance.get("/products");
+      console.log(data) 
+      setProducts(data);
+    } catch (error) {
+      console.log("get product error----->", error.message);
+    }
+  };
 
+  // Fetch on mount if no local data
+  useEffect(() => {
+    if (!products.length) {
+      getProduct();
+    }
+  }, []);
 
-//   useEffect(() => {
-//     getProducts();
-//   }, []);
+  // Save products to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem("products", JSON.stringify(products));
+  }, [products]);
 
   return (
-    <ProductContext.Provider value={{ Products, setproducts }}>
+    <ProductContext.Provider value={{ products, setProducts, getProduct }}>
       {children}
     </ProductContext.Provider>
   );

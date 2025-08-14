@@ -1,90 +1,94 @@
-// import React from 'react'
-
 import { useContext, useState } from "react";
 import { ProductContext } from "../utils/Context";
 import { nanoid } from "nanoid";
-import { useNavigate } from "react-router-dom";
-const Create = () => {
-  
-  const navigate =  useNavigate()
-  const{Products, setproducts} = useContext(ProductContext)
-  const [title, settitle] = useState("");
-  const [image, setimage] = useState("");
-  const [category, setcategory] = useState("");
-  const [price, setprice] = useState("");
-  const [description, setdescription] = useState("");
+import { useNavigate } from "react-router";
 
-  const AddProductHandler = (e) => {
+const Create = () => {
+  const navigate = useNavigate();
+  const { products, setProducts } = useContext(ProductContext);
+  const [form, setForm] = useState({
+    title: "",
+    image: "",
+    category: "",
+    price: "",
+    description: "",
+  });
+
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    
-    if(title.trim().length < 5 || category.trim().length < 5 || description.trim().length < 5 || price.trim().length < 1  || image.trim().length < 5){
-      alert('each and ever input must have atleast 4 characters')
-      return 
+    const { title, image, category, price, description } = form;
+    if ([title, image, category, price, description].some((f) => f.trim().length < 1)) {
+      return alert("All fields are required!");
     }
 
-
-    const product = {
-      id:nanoid(),
-      title,
-      image,
-      description,
-      price,
-     };
-    setproducts([...Products,product])
-    localStorage.setItem("products", JSON.stringify([...Products,product]))
-     navigate('/')
+    const newProduct = { id: nanoid(), ...form };
+    setProducts([...products, newProduct]);
+    localStorage.setItem("products", JSON.stringify([...products, newProduct]));
+    navigate("/");
   };
 
-
   return (
-    <form
-      onSubmit={AddProductHandler}
-      className="p-[5%] w-screen h-screen flex flex-col items-center "
-    >
-      <h1 className="text-3xl w-1/2 mb-3">Add New Products</h1>
-      <input
-        type="url"
-        placeholder="Image Url"
-        className="mb-3 text-3xl bg-zinc-100 rounded p-3  w-1/2"
-        onChange={(e) => setimage(e.target.value)}
-        value={image}
-      />
-      <input
-        type="text"
-        placeholder="title"
-        className="mb-3 text-3xl bg-zinc-100 rounded p-3  w-1/2"
-        onChange={(e) => settitle(e.target.value)}
-        value={title}
-      />
+    <div className="min-h-screen flex items-center justify-center mx-auto  p-4 sm:p-6">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white shadow-xl rounded-2xl p-6 sm:p-8 md:p-10 w-full max-w-3xl flex flex-col gap-5 transition-transform transform hover:scale-[1.01]"
+      >
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-center text-gray-800 mb-6">
+          Add New Product
+        </h1>
 
-      <div className="w-1/2  flex gap-5 ">
+        <input
+          type="url"
+          name="image"
+          placeholder="Image URL"
+          value={form.image}
+          onChange={handleChange}
+          className="p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+        />
         <input
           type="text"
-          placeholder="category"
-          className=" text-2xl bg-zinc-100 rounded p-3  w-[48%] mb-5"
-          onChange={(e) => setcategory(e.target.value)}
-          value={category}
+          name="title"
+          placeholder="Product Title"
+          value={form.title}
+          onChange={handleChange}
+          className="p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
         />
-        <input
-          type="number"
-          placeholder="price"
-          className="mb-5 text-2xl bg-zinc-100 rounded p-3  w-[48%] "
-          onChange={(e) => setprice(e.target.value)}
-          value={price}
-        />
-      </div>
 
-      <textarea
-        placeholder="enter product description "
-        onChange={(e) => setdescription(e.target.value)}
-        className="mb-3 text-3xl bg-zinc-100 rounded p-3  w-1/2"
-        rows="10"
-        value={description}
-      ></textarea>
-      <button className=" py-3 px-5 border rounded border-zinc-400 hover:bg-zinc-400 transition delay-150 duration-300 ease-in-out  hover:text-white text-zinc-600">
-        Add New Product
-      </button>
-    </form>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <input
+            type="text"
+            name="category"
+            placeholder="Category"
+            value={form.category}
+            onChange={handleChange}
+            className="flex-1 p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+          />
+          <input
+            type="number"
+            name="price"
+            placeholder="Price"
+            value={form.price}
+            onChange={handleChange}
+            className="flex-1 p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+          />
+        </div>
+
+        <textarea
+          name="description"
+          placeholder="Product Description"
+          value={form.description}
+          onChange={handleChange}
+          rows="6"
+          className="p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition resize-none"
+        ></textarea>
+
+        <button className="py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-indigo-700 transition">
+          Add Product
+        </button>
+      </form>
+    </div>
   );
 };
 

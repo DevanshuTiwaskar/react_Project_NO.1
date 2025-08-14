@@ -1,11 +1,7 @@
-// import React from 'react'
+const Loading = () => (
+  <div className="w-full h-screen flex justify-center items-center bg-gray-50">
+    <h1 className="text-6xl font-bold animate-pulse text-blue-600">Loading...</h1>
+  </div>
+);
 
-const loading = () => {
-  return (
-    <div className="w-full h-full flex justify-center items-center">
-        <h1 className='text-6xl'>Loading....</h1>
-    </div>
-  )
-}
-
-export default loading
+export default Loading;
